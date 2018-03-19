@@ -7,7 +7,7 @@
 # Author: guchenghao
 # -----
 # Last Modified: guchenghao
-# Modified By: Saturday, 10th March 2018 12:09:38 pm
+# Modified By: Monday, 19th March 2018 3:32:41 pm
 # -----
 # Copyright (c) 2018 University
 # Fighting!!!
@@ -2432,7 +2432,7 @@ def findContentChildren(self, g, s):  # ! 使用贪心算法
 
 
 # %%
-# *
+# * Range Sum Query - Immutable
 from functools import reduce
 
 
@@ -2458,7 +2458,7 @@ class NumArray:  # ! 这个方法超时了
 import itertools
 
 
-class NumArray:
+class NumArray:  # ! 使用itertools的accumulate方法
 
     def __init__(self, nums):
         """
@@ -2473,3 +2473,501 @@ class NumArray:
         :rtype: int
         """
         return self.accu[j + 1] - self.accu[i]
+
+
+# %%
+def isPalindrome(self, x):  # ! 288ms, 时间有点长
+    """
+    :type x: int
+    :rtype: bool
+    """
+    x = str(x)
+    # if len(x) is 1: return True
+    i = 0
+    j = len(x) - 1
+    while i <= len(x) / 2:
+        if x[i] is not x[j]:
+            return False
+        i += 1
+        j -= 1
+
+    else:
+        return True
+
+
+# %%
+def findRelativeRanks(self, nums):
+    """
+    :type nums: List[int]
+    :rtype: List[str]
+    """
+    new_num = nums[:]
+    num_dict = {}
+    for i, v in enumerate(sorted(nums, reverse=True)):
+        num_dict[v] = i + 1
+
+    return ["Gold Medal" * (num_dict[item] is 1) or "Silver Medal" * (num_dict[item] is 2) or "Bronze Medal" * (num_dict[item] is 3) or str(num_dict[item]) for item in new_num]
+
+
+# %%
+# * Power of Four
+def isPowerOfFour(self, num):
+    """
+    :type num: int
+    :rtype: bool
+    """
+    while num % 4 == 0 and num is not 0:
+        num = num / 4
+    else:
+        return True if int(num) is 1 else False
+
+    # ! 下面的方法比较巧妙，利用了题设中的
+    # ! return num != 0 and num &(num-1) == 0 and num & 1431655765== num
+
+
+# %%
+# * Minimum Depth of Binary Tree
+def minDepth(self, root):  # ! 56ms 使用广度优先搜索
+    """
+    :type root: TreeNode
+    :rtype: int
+    """
+    if root is None:
+        return 0
+
+    depth = 1
+
+    queue = []
+    queue.append(root)
+    count = 0
+    lastnum = 1
+
+    while queue:
+        node = queue.pop(0)
+        print(node.val)
+
+        if not node.left and not node.right:
+            return depth
+        lastnum -= 1
+
+        if node.left:
+            queue.append(node.left)
+            count += 1
+        if node.right:
+            queue.append(node.right)
+            count += 1
+
+        if lastnum is 0:
+            lastnum = count
+            count = 0
+            depth += 1
+
+
+# %%
+# * Min Stack
+class MinStack:  # ! 768ms，比较慢
+
+    def __init__(self):
+        """
+        initialize your data structure here.
+        """
+        self.stack = []
+
+    def push(self, x):
+        """
+        :type x: int
+        :rtype: void
+        """
+        self.stack.append(x)
+
+    def pop(self):
+        """
+        :rtype: void
+        """
+        self.stack.pop()
+
+    def top(self):
+        """
+        :rtype: int
+        """
+        return self.stack[-1]
+
+    def getMin(self):
+        """
+        :rtype: int
+        """
+        return min(self.stack)
+
+
+class MinStack:  # ! 这个方法快只需要64ms
+
+    def __init__(self):
+        self.stack1 = []
+        self.stack2 = []
+
+    def push(self, x):
+        self.stack1.append(x)
+        if not self.stack2 or self.stack2[-1] >= x:
+            self.stack2.append(x)
+
+    def pop(self):
+        tmp = self.stack1[-1]
+        self.stack1.pop()
+        if self.stack2 and tmp == self.stack2[-1]:
+            self.stack2.pop()
+        return tmp
+
+    def top(self):
+        return self.stack1[-1]
+
+    def getMin(self):
+        return self.stack2[-1]
+
+
+# %%
+# * Binary Watch
+def readBinaryWatch(self, num):  # ! 44ms，进行双重循环，并统计1的数量，没什么太多的技巧性
+    """
+    :type num: int
+    :rtype: List[str]
+    """
+    return ['%d:%02d' % (h, m)
+            for h in range(12) for m in range(60)
+            if (bin(h) + bin(m)).count('1') == num]
+
+
+# %%
+# * Binary Tree Paths
+# ! 这道题的基本思路是采用深度优先搜索算法
+def binaryTreePaths(self, root):
+    """
+    :type root: TreeNode
+    :rtype: List[str]
+    """
+    if not root:
+        return []
+    if not root.left and not root.right:
+        return [str(root.val)]
+
+    return [str(root.val) + '->' + i for i in self.binaryTreePaths(root.left)] + [str(root.val) + '->' + i for i in self.binaryTreePaths(root.right)]
+
+
+def binaryTreePaths(self, root):  # ! 这个思路我想到了，但是实现的方式有点问题
+    """
+    :type root: TreeNode
+    :rtype: List[str]
+    """
+    if not root:
+        return []
+    res = []
+    self.dfs(root, "", res)
+    return res
+
+    def dfs(self, root, ls, res):
+        if not root.left and not root.right:
+            res.append(ls+str(root.val))
+        if root.left:
+            self.dfs(root.left, ls+str(root.val)+"->", res)
+        if root.right:
+            self.dfs(root.right, ls+str(root.val)+"->", res)
+
+
+# %%
+# * Second Minimum Node In a Binary Tree
+# ! 使用深度优先搜索遍历每个结点
+def findSecondMinimumValue(self, root):
+    """
+    :type root: TreeNode
+    :rtype: int
+    """
+    self.res = []
+    if not root:
+        return -1
+
+    def dfs(node):
+        if node:
+            self.res.append(node.val)
+
+            if node.left:
+                dfs(node.left)
+
+            if node.right:
+                dfs(node.right)
+
+    dfs(root)
+    res_set = list(set(self.res))
+    res_set.sort()
+
+    return -1 if len(res_set) is 1 else res_set[1]
+
+
+# %%
+# * Implement Queue using Stacks
+class MyQueue:
+
+    def __init__(self):
+        """
+        Initialize your data structure here.
+        """
+        self.stack = []
+
+    def push(self, x):
+        """
+        Push element x to the back of queue.
+        :type x: int
+        :rtype: void
+        """
+        self.stack.append(x)
+
+    def pop(self):
+        """
+        Removes the element from in front of queue and returns that element.
+        :rtype: int
+        """
+        return self.stack.pop(0)
+
+    def peek(self):
+        """
+        Get the front element.
+        :rtype: int
+        """
+        return self.stack[0]
+
+    def empty(self):
+        """
+        Returns whether the queue is empty.
+        :rtype: bool
+        """
+        return True if not self.stack else False
+
+
+# %%
+# * Convert a Number to Hexadecimal
+def toHex(self, num):  # ! 这个方法是作弊的，我只是想测试一下时间，40ms
+    """
+    :type num: int
+    :rtype: str
+    """
+    if num < 0:
+        num += 2 ** 32
+
+    return hex(num)[2:]
+
+
+def toHex(self, num):  # ! 这个是常规方法， 37ms
+    """
+    :type num: int
+    :rtype: str
+    """
+    if num is 0:
+        return '0'
+    if num < 0:
+        num += 2 ** 32
+
+    dict_hex = ['0', '1', '2', '3', '4', '5', '6',
+                '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f']
+    res = ''
+
+    while num:
+
+        res += dict_hex[num % 16]
+        num = num // 16
+
+    else:
+        return res[::-1]
+
+
+# %%
+# * Implement Stack using Queues
+class MyStack:
+
+    def __init__(self):
+        """
+        Initialize your data structure here.
+        """
+        self.stack = []
+
+    def push(self, x):
+        """
+        Push element x onto stack.
+        :type x: int
+        :rtype: void
+        """
+        self.stack.append(x)
+
+    def pop(self):
+        """
+        Removes the element on top of the stack and returns that element.
+        :rtype: int
+        """
+        return self.stack.pop()
+
+    def top(self):
+        """
+        Get the top element.
+        :rtype: int
+        """
+        return self.stack[-1]
+
+    def empty(self):
+        """
+        Returns whether the stack is empty.
+        :rtype: bool
+        """
+        return True if not self.stack else False
+
+
+# %%
+# *  Two Sum IV - Input is a BST
+def findTarget(self, root, k):  # ! 736ms，太慢了，使用深度优先搜索
+    """
+    :type root: TreeNode
+    :type k: int
+    :rtype: bool
+    """
+    if not root:
+        return False
+    self.res = []
+
+    def DSTFind(node):
+        if node:
+            if k - node.val in self.res:
+                self.res.append('True')
+                return
+
+            self.res.append(node.val)
+
+            if node.left:
+                DSTFind(node.left)
+
+            if node.right:
+                DSTFind(node.right)
+
+    DSTFind(root)
+
+    return True if 'True' in self.res else False
+
+
+def findTarget(self, root, k):  # ! 104ms，利用广度优先搜索
+    """
+    :type root: TreeNode
+    :type k: int
+    :rtype: bool
+    """
+    if not root:
+        return False
+    res = []
+    bfs = [root]
+
+    while bfs:
+        node = bfs.pop(0)
+        if k - node.val in res:
+            return True
+
+        res.append(node.val)
+
+        if node.left:
+            bfs.append(node.left)
+
+        if node.right:
+            bfs.append(node.right)
+
+    return False
+
+
+# %%
+# * Construct the Rectangle
+def constructRectangle(self, area):
+    """
+    :type area: int
+    :rtype: List[int]
+    """
+    # ! int函数会自动向下取整
+    mid = int(math.sqrt(area))
+    while mid > 0:
+        if area % mid == 0:
+            # ! [L, W]
+            return [int(area / mid), int(mid)]
+        mid -= 1
+
+
+# %%
+# * Longest Common Prefix
+def longestCommonPrefix(self, strs):  # ! 44ms
+    """
+    :type strs: List[str]
+    :rtype: str
+    """
+    if not strs:
+        return ""
+
+    length = 0
+    # ! 这个方法中主要是zip这方法用得十分巧妙
+    # ! 每一个item就是字符串数组中每个字符串的字符组成一个tuple，例如：('','','')
+    for item in list(zip(*strs)):
+
+        if len(set(item)) > 1:
+            return strs[0][:length]
+
+        length += 1
+
+    return strs[0][:length]
+
+
+# %%
+# * Average of Levels in Binary Tree
+def averageOfLevels(self, root):  # ! 利用广度优先搜索，64ms
+    """
+    :type root: TreeNode
+    :rtype: List[float]
+    """
+    if not root:
+        return []
+    bfs = [root]
+    res = []
+    tempres = []
+    lastnum = 1
+    count = 0
+
+    while bfs:
+        node = bfs.pop(0)
+        tempres.append(node.val)
+        lastnum -= 1
+
+        if node.left:
+            bfs.append(node.left)
+            count += 1
+
+        if node.right:
+            bfs.append(node.right)
+            count += 1
+
+        if lastnum is 0:
+            lastnum = count
+            count = 0
+            res.append(sum(tempres) / len(tempres))
+            tempres = []
+
+    return res
+
+
+# %%
+# * Longest Harmonious Subsequence
+# ! 这道题其实就是再统计x和x + 1的总和最大的那组数据的长度
+from collections import Counter
+
+
+def findLHS(self, nums):
+    """
+    :type nums: List[int]
+    :rtype: int
+    """
+    count = collections.Counter(nums)
+    ans = 0
+    for x in count:
+        if x + 1 in count:
+            ans = max(ans, count[x] + count[x+1])
+    return ans
+
+
+# %%

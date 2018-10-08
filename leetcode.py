@@ -2971,3 +2971,77 @@ def findLHS(self, nums):
 
 
 # %%
+# * Daily Temperatures
+def dailyTemperatures(self, temperatures):
+    """
+    :type temperatures: List[int]
+    :rtype: List[int]
+    """
+    # ! O(n ** 2)的方法是肯定可以做的，下面这个方法思路更加巧妙，时间复杂度只有O(n)
+
+    res = [0 for i in range(len(temperatures))]
+    stack = []
+    for i, tem in enumerate(temperatures):
+
+        # ! 当当前元素大于stack中最后一个元素时，修改res中相应位置的值，否则跳出循环
+        while len(stack) and tem > stack[-1][1]:
+            fi, ft = stack.pop()
+            res[fi] = i - fi
+        stack.append((i, tem))
+    return res
+
+
+# %%
+# * Backspace String Compare
+def backspaceCompare(self, S, T):
+    """
+    :type S: str
+    :type T: str
+    :rtype: bool
+    """
+
+    def backspace_op(string):
+
+        stack = []
+
+        for i, item in enumerate(string):
+
+            if item == '#' and len(stack) > 0:
+                stack.pop()
+
+            if item != '#':
+                stack.append(item)
+
+        return "".join(stack)
+
+    S_stack = backspace_op(S)
+    T_stack = backspace_op(T)
+
+    return S_stack == T_stack
+
+
+# %%
+# * Reverse Vowels of a String
+def reverseVowels(self, s):
+    """
+    :type s: str
+    :rtype: str
+    """
+    ss = list(s)
+    aeiou = ['a', 'e', 'i', 'o', 'u', 'A', 'E', 'I', 'O', 'U']  # ! 元音字符列表
+    n = len(s)
+    i = 0       # ! 头指针
+    j = n - 1     # ! 尾指针
+
+    while i < j:
+        if ss[i] not in aeiou:  # ! 如果头不是是元音字符，向后移动，跳过循环
+            i += 1
+            continue
+        if ss[j] not in aeiou:  # ! 如果尾是元音字符，向前移动，跳过循环
+            j -= 1
+            continue
+        if (i < j):     # ! 如果头指针和尾指针同时指向元音字符，交换
+            ss[i], ss[j] = ss[j], ss[i]
+            i += 1
+            j -= 1
+    return "".join(ss)

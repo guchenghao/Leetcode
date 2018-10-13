@@ -3045,3 +3045,30 @@ def reverseVowels(self, s):
             i += 1
             j -= 1
     return "".join(ss)
+
+
+# %%
+# * 1-bit and 2-bit Characters
+def isOneBitCharacter(self, bits):
+    """
+    :type bits: List[int]
+    :rtype: bool
+    """
+    length = len(bits)
+    if length == 1:
+        return True
+
+    if length == 2:
+        if bits[0] == 1:
+            return False
+        else:
+            return True
+
+    i = 0
+    while i < length - 1:
+        if bits[i] == 0:
+            i += 1
+        else:
+            i += 2
+
+    return True if i == length - 1 else False

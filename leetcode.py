@@ -3072,3 +3072,56 @@ def isOneBitCharacter(self, bits):
             i += 2
 
     return True if i == length - 1 else False
+
+
+# %%
+# * Buddy Strings
+from collections import Counter
+
+
+def buddyStrings(self, A, B):
+    """
+    :type A: str
+    :type B: str
+    :rtype: bool
+    """
+
+    zip_ab = zip(A, B)  # ! 要会活用zip函数，zip函数相当于多一条思路
+
+    count_a = Counter(A)
+    count_b = Counter(B)
+
+    count_num = sum([x != y for x, y in zip_ab])
+
+    # ! 这是这道题的精髓所在
+    return count_num <= 2 and count_a == count_b if A != B else len(set(A)) < len(A)
+
+
+# %%
+# * Most Common Word
+def mostCommonWord(self, paragraph, banned):
+    """
+    :type paragraph: str
+    :type banned: List[str]
+    :rtype: str
+    """
+    ban = set(banned)
+    # ! 将paragraph中所有非字母的符号转化为空格
+    words = re.sub(r'[^a-zA-Z]', ' ', paragraph).lower().split()
+    # ! 除去banned数组中的值，再利用Counter获取最高频率的词
+    return Counter(w for w in words if w not in ban).most_common(1)[0][0]
+
+
+# %%
+# * Search in Rotated Sorted Array
+def search(self, nums, target):
+    """
+    :type nums: List[int]
+    :type target: int
+    :rtype: int
+    """
+
+    try:
+        return nums.index(target)
+    except:
+        return -1

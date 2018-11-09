@@ -3125,3 +3125,80 @@ def search(self, nums, target):
         return nums.index(target)
     except:
         return -1
+
+
+# %%
+# * Baseball Game
+def calPoints(self, ops):
+    """
+    :type ops: List[str]
+    :rtype: int
+    """
+    ops_stack = []
+
+    while ops:
+        op = ops.pop(0)
+
+        if op.isdigit():
+            ops_stack.append(int(op))
+            continue
+
+        if '-' in op:
+            ops_stack.append(int(op))
+            continue
+
+        if op == 'C':
+            ops_stack.pop()
+            continue
+
+        if op == 'D':
+            ops_stack.append(ops_stack[-1] * 2)
+            continue
+
+        if op == '+':
+            ops_stack.append(ops_stack[-1]  + ops_stack[-2])
+
+    return sum(ops_stack)
+
+
+# %%
+# * Implement Magic Dictionary
+
+
+class MagicDictionary:
+
+    def __init__(self):
+        """
+        Initialize your data structure here.
+        """
+        self.default_dict = collections.defaultdict(set)
+
+    def buildDict(self, dict):
+        """
+        Build a dictionary through a list of words
+        :type dict: List[str]
+        :rtype: void
+        """
+        for item in dict:
+            self.default_dict[len(item)].add(item)
+
+    def search(self, word):
+        """
+        Returns if there is any word in the trie that equals to the given word after modifying exactly one character
+        :type word: str
+        :rtype: bool
+        """
+        k = len(word)
+
+        if k in self.default_dict:
+            for idx, item in enumerate(self.default_dict[k]):
+                if item == word:
+                    continue
+                res = [1 for i in range(0, k) if item[i] != word[i]]
+
+                if sum(res) == 1:
+                    return True
+
+            return False
+        else:
+            return False

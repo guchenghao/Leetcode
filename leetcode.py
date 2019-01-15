@@ -15,6 +15,12 @@
 # We're doomed!
 ###
 
+'''[Tips]
+   # ! 双指针法(Two-Pointer)经常用在sorted的list中
+
+'''
+
+
 
 # %%
 # * two sum
@@ -42,9 +48,25 @@ def twoSum(nums, target):
             continue
 
 
+def twoSum(self, nums, target):
+    # ! 这个方法比较耗时
+    """
+    :type nums: List[int]
+    :type target: int
+    :rtype: List[int]
+    """
+    for i in range(len(nums)):
+        diff = target - nums[i]
+        temp = nums[i + 1:]
+
+        if diff in temp:
+            return [i, temp.index(diff) + i + 1]
+
+
 # %%
 # * Remove Element
 def removeElement(nums, val):
+    # ! two-pointer 方法
     """
     :type nums: List[int]
     :type val: int
@@ -158,6 +180,7 @@ def hasPathSum(self, root, sum):
 # %%
 # * Contains Duplicate
 def containsDuplicate(self, nums):
+    # ! 不知道为什么之前会想这么复杂。。。。。
     """
     :type nums: List[int]
     :rtype: bool
@@ -173,6 +196,15 @@ def containsDuplicate(self, nums):
         else:
             continue
     return False
+
+
+def containsDuplicate(self, nums):
+    """
+    :type nums: List[int]
+    :rtype: bool
+    """
+
+    return False if len(nums) == len(set(nums)) else True
 
 
 # %%
@@ -375,12 +407,39 @@ def twoSum(self, numbers, target):  # ! 这个方法可行
         numbers_dict[v] = idn
 
 
+def twoSum(self, numbers, target):  # ! two-pointer
+    """
+    :type numbers: List[int]
+    :type target: int
+    :rtype: List[int]
+    """
+    i = 0
+    j = len(numbers) - 1
+    res = []
+
+    while True:
+        addition = numbers[i] + numbers[j]
+        if addition == target:
+            res.append(i + 1)
+            res.append(j + 1)
+            break
+
+        elif addition > target:
+            j -= 1
+
+        else:
+            i += 1
+
+    return res
+
+
 # %%
 # * Max Consecutive Ones
 from collections import defaultdict
 
 
 def findMaxConsecutiveOnes(self, nums):
+    # ! 利用dict来存储不同区段的'1'的个数
     """
     :type nums: List[int]
     :rtype: int
@@ -391,7 +450,7 @@ def findMaxConsecutiveOnes(self, nums):
         if num == 1:
             nums_dict[i] = nums_dict[i] + 1
         else:
-            i = i + 1
+            i = i + 1 # ! 如果当前的字符不是'1'而是'0'是，通过加1来更新key
 
     if nums_dict.values():
         return max(nums_dict.values())
@@ -483,6 +542,18 @@ def pivotIndex(self, nums):  # ! 143ms
             return idn
         left += num
     return -1
+
+
+def pivotIndex(self, nums):  # ! 11764 ms, 这个运行时间，我枯了
+        """
+        :type nums: List[int]
+        :rtype: int
+        """
+        for idx in range(len(nums)):
+            if sum(nums[:idx]) == sum(nums[idx + 1:]):
+                return idx
+
+        return -1
 
 
 # %%
@@ -699,6 +770,7 @@ def rotate(self, nums, k):
     :type k: int
     :rtype: void Do not return anything, modify nums in-place instead.
     """
+    # ! 如果 k > 数组的长度，则取数组长度的余数作为k，例如: len = 7，k=3和k=10的结果一样
     n = len(nums)
     k = k % n
     nums[:] = nums[n-k:] + nums[:n-k]
@@ -947,7 +1019,7 @@ def firstUniqChar(self, s):  # ! 90ms
     :type s: str
     :rtype: int
     """
-    # ! 只需要遍历26次
+    # ! 只需要遍历26次, 时间复杂度为O(1)
     letters = 'abcdefghijklmnopqrstuvwxyz'
     index = [s.index(l) for l in letters if s.count(l) == 1]
     return min(index) if len(index) > 0 else -1
@@ -984,6 +1056,14 @@ def reverseString(self, s):
     s_Arr = [item for item in s]
     s_Arr.reverse()
     return "".join(s_Arr)
+
+
+def reverseString(self, s):
+        """
+        :type s: str
+        :rtype: str
+        """
+        return "".join(list(reversed(s)))
 
 
 # %%
@@ -1034,6 +1114,29 @@ def intersect(self, nums1, nums2):
     c1 = Counter(nums1)
     c2 = Counter(nums2)
     return list((c1 & c2).elements())
+
+
+def intersect(self, nums1, nums2):  # ! 108ms
+    # ! 这个方法太粗暴
+    """
+    :type nums1: List[int]
+    :type nums2: List[int]
+    :rtype: List[int]
+    """
+    res = []
+    if len(nums1) > len(nums2):
+        for item in nums2:
+            if item in nums1:
+                res.append(item)
+                nums1.remove(item)
+
+    else:
+        for item in nums1:
+            if item in nums2:
+                res.append(item)
+                nums2.remove(item)
+
+    return res
 
 
 # %%
@@ -1179,6 +1282,7 @@ def countPrimes(self, n):  # ! 厄拉多筛选法 超时
 
 # %%
 # * Delete Node in a Linked List
+# ! he Two-pointer technique, which not only applicable to Array problems but also Linked List problems as well
 def deleteNode(self, node):
     """
     :type node: ListNode
@@ -1193,7 +1297,7 @@ def deleteNode(self, node):
 # * Reverse Linked List
 def reverseList(self, head):
     # ! 在遍历链表的时候，修改指针所指向的方向
-    prev = None
+    prev = None  # ! 在这里的时候，创建一个空指针
     while head:
         curr = head
         curr.next = prev  # ! 调转指针方向
@@ -1206,6 +1310,7 @@ def reverseList(self, head):
 # * Merge Two Sorted Lists
 # ! 这种方法使用额外的空间，因为该程序创建了一个新的链表
 def mergeTwoLists(self, l1, l2):
+    # !这个方法核心思路就是创建一个新的链表，在比较两个待merged的链表
     """
     :type l1: ListNode
     :type l2: ListNode
@@ -1259,6 +1364,24 @@ def hasCycle(self, head):  # ! 这个更快些
         cur = n
     return False
 
+
+def hasCycle(self, head):
+    # ! 龟兔赛跑算法
+    """
+    :type head: ListNode
+    :rtype: bool
+    """
+    # ! fast指针每次走两步，slow指针每次走一步
+    fast = slow = head
+
+    while fast and fast.next and fast.next.next:
+
+        slow, fast = slow.next, fast.next.next
+
+        # ! 如果slow == fast，说明有环
+        if slow is fast:
+            return True
+    return False
 
 # %%
 # * Remove Linked List Elements
@@ -1501,6 +1624,21 @@ def reverse(self, x):
     n = int("".join(result))
 
     return n if n.bit_length() < 32 else 0
+
+
+def reverse(self, x):
+    """
+    :type x: int
+    :rtype: int
+    """
+    if x == 0: return 0
+    if x > 0:
+        res = int("".join(list(reversed(str(x)))))
+        return 0 if res > 2 ** 31 - 1 else res
+
+    else:
+        res = - int("".join(list(reversed(str(x)[1:]))))
+        return 0 if res < - 2 ** 31 else res
 
 
 # %%
@@ -1773,6 +1911,7 @@ def findPairs(self, nums, k):  # ! 这个就比较简洁了
 
 # %%
 # * Valid Palindrome
+# ! 这道题用two-pointer的方法可以做
 def isPalindrome(self, s):  # ! 常规思路
     """
     :type s: str
@@ -1816,6 +1955,19 @@ def reverseWords(self, s):  # ! 常规方法
         result.append(item[::-1])
 
     return " ".join(result)
+
+def reverseWords(self, s):
+        """
+        :type s: str
+        :rtype: str
+        """
+        s_arr = s.split()
+
+        for i in range(len(s_arr)):
+            s_arr[i] = "".join(list(reversed(s_arr[i])))
+
+
+        return " ".join(s_arr)
 
 
 # %%
@@ -2768,6 +2920,7 @@ def toHex(self, num):  # ! 这个是常规方法， 37ms
                 '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f']
     res = ''
 
+    # ! 短除法，用于解决进制转换问题
     while num:
 
         res += dict_hex[num % 16]
@@ -3120,7 +3273,6 @@ def search(self, nums, target):
     :type target: int
     :rtype: int
     """
-
     try:
         return nums.index(target)
     except:
@@ -3202,3 +3354,974 @@ class MagicDictionary:
             return False
         else:
             return False
+
+# %%
+# * Best Time to Buy and Sell Stock II
+def maxProfit(self, prices):
+        """
+        :type prices: List[int]
+        :rtype: int
+        """
+        if prices == []:
+            return 0
+
+        profits = [prices[i + 1] - prices[i] for i in range(len(prices) - 1)]
+        if prices.index(max(prices)) > prices.index(min(prices)):
+            range_profits = max(prices) - min(prices)
+        else:
+            range_profits = 0
+        all_profits = 0
+
+        for item in profits:
+            if item > 0:
+                all_profits += item
+
+        if all_profits == 0:
+            return 0
+
+
+        return all_profits if all_profits > range_profits else range_profits
+
+# %%
+# * Magic Squares In Grid
+def numMagicSquaresInside(self, grid):
+    # ! 这道题极其的无聊
+    """
+    :type grid: List[List[int]]
+    :rtype: int
+    """
+    count = 0
+    for i in range(len(grid) - 2):
+        for j in range(len(grid[i]) - 2):
+            test_arr = []
+            test_arr.append(grid[i][j])
+            test_arr.append(grid[i][j + 1])
+            test_arr.append(grid[i][j + 2])
+            test_arr.append(grid[i + 1][j])
+            test_arr.append(grid[i + 1][j + 1])
+            test_arr.append(grid[i + 1][j + 2])
+            test_arr.append(grid[i + 2][j])
+            test_arr.append(grid[i + 2][j + 1])
+            test_arr.append(grid[i + 2][j + 2])
+            if len(set(test_arr)) < 9:
+                continue
+            test_temp = 0
+            for item in test_arr:
+                if item >= 1 and item <= 9:
+                    test_temp += 1
+
+            if test_temp != 9:
+                continue
+            magic_sum = grid[i][j] + grid[i][j + 1] + grid[i][j + 2]
+            magic_next = grid[i + 1][j] + grid[i + 1][j + 1] + grid[i + 1][j + 2]
+            magic_last = grid[i + 2][j] + grid[i + 2][j + 1] + grid[i + 2][j + 2]
+            magic_diagonal = grid[i][j] + grid[i + 1][j + 1] + grid[i + 2][j + 2]
+            magic_re_diagonal = grid[i][j + 2] + grid[i + 1][j + 1] + grid[i + 2][j]
+            magic_col = grid[i][j] + grid[i + 1][j] + grid[i + 2][j]
+            magic_col_next = grid[i][j + 1] + grid[i + 1][j + 1] + grid[i + 2][j + 1]
+            magic_col_last = grid[i][j +2] + grid[i + 1][j + 2] + grid[i + 2][j + 2]
+
+            if magic_sum == magic_next and magic_sum == magic_last and magic_sum == magic_diagonal and magic_sum == magic_re_diagonal and magic_sum and magic_sum == magic_col and magic_sum == magic_col_next and magic_sum == magic_col_last:
+                count += 1
+
+
+    return count
+
+# %%
+# * Reveal Cards In Increasing Order
+def deckRevealedIncreasing(self, deck):
+    # ! 按照题目给的思路倒过来求解
+    """
+    :type deck: List[int]
+    :rtype: List[int]
+    """
+    if not deck:
+        return []
+
+    deck = sorted(deck, reverse=True)
+    reorder = [deck[0]]
+
+    for i in range(1, len(deck)):
+        reorder.insert(0, reorder[-1])
+        temp = reorder.pop(-1)
+        reorder.insert(0, deck[i])
+
+
+    return reorder
+
+# %%
+# * Subarray Sum Equals K
+# ! perfix Sum
+# ! As is typical with problems involving subarrays, we use prefix sums to add each subarray
+def subarraySum(self, nums, k):
+    # ! 暴力求解，无法通过，超时
+    # ! O(n^2 + n)
+    """
+    :type nums: List[int]
+    :type k: int
+    :rtype: int
+    """
+    hash_dict = {}
+    acc = 0
+    count = 0
+
+    for item in enumerate(nums):
+        acc += item[1]
+        hash_dict[item[0]] = acc
+
+
+    hash_arr = list(hash_dict.values())
+
+    for i in range(len(hash_arr)):
+        for j in range(i, len(hash_arr)):
+            diff = hash_arr[j] - hash_arr[i] + nums[i]
+
+            if diff == k:
+                count += 1
+
+    return count
+
+
+def subarraySum(self, nums, k):
+    # ! 这样也是暴力求解，O(n^2)
+    """
+    :type nums: List[int]
+    :type k: int
+    :rtype: int
+    """
+    acc = 0
+    count = 0
+
+    for i in range(len(nums)):
+        acc = nums[i]
+        if acc == k:
+            count += 1
+        for j in range(i + 1, len(nums)):
+            acc += nums[j]
+
+            if acc == k:
+                count += 1
+
+    return count
+
+
+def subarraySum(self, nums, k):
+    # * 最佳方案
+    # ! 建立哈希表的目的是为了让我们可以快速的查找sum-k是否存在，即是否有连续子数组的和为sum-k
+    # ! 如果sum-k存在于数组中的话，表示k肯定能在数组总找到
+    """
+    :type nums: List[int]
+    :type k: int
+    :rtype: int
+    """
+    res = 0
+    dic = {0: 1} # ! 初始化
+    summ = 0
+    for n in nums:
+        summ += n
+        diff = summ - k
+        if diff in dic:
+            res += dic[diff]
+        if summ in dic:
+            dic[summ] += 1
+        else:
+            dic[summ] = 1
+    return res
+
+
+# %%
+# * Combination Sum
+def combinationSum(self, candidates, target):
+    # ! 这道题需要用到递归和回溯法
+    """
+    :type candidates: List[int]
+    :type target: int
+    :rtype: List[List[int]]
+    """
+    temp = []
+    res = []
+
+    # ! 回溯法用深度优先搜索(DFS)来实现
+    def bf_dfs(target, k, candidates, temp, res):
+
+        # ! 递归退出条件
+        if target == 0:
+            res.append(temp[:])
+            return
+
+        # ! 循环递归
+        for i in range(k, len(candidates)):
+            # ! 直接跳过相同元素
+            if i != 0 and candidates[i] == candidates[i - 1]:
+                continue
+
+            # ! 计算差距或者差异
+            diff = target - candidates[i]
+
+            if diff >= 0:
+                temp.append(candidates[i])
+                # ! 递归，深度优先搜索
+                bf_dfs(diff, i, candidates, temp, res)
+                del temp[-1]
+
+        return
+
+    bf_dfs(target, 0, candidates, temp, res)
+
+    return res
+
+
+# %%
+# * Combination Sum II
+def combinationSum2(self, candidates, target):
+    # ! 1、在同一层递归树中，如果某元素已经处理并进入下一层递归，那么与该元素相同的值就应该跳过。否则将出现重复
+    # ! 2、相同元素第一个进入下一层递归，而不是任意一个
+    """
+    :type candidates: List[int]
+    :type target: int
+    :rtype: List[List[int]]
+    """
+    temp = []
+    res = []
+    final_res = []
+
+    candidates = sorted(candidates) # ! 先按从小到大的顺序排序
+
+    # ! 回溯法用深度优先搜索(DFS)来实现
+    def bf_dfs(target, k, candidates, temp, res):
+
+        # ! 递归退出条件
+        if target == 0:
+            res.append(temp[:])
+            return
+
+        # ! 循环递归
+        for i in range(k, len(candidates)):
+            # !因为有重复元素，所以保证相同元素第一个进入下一层递归
+            if i != k and candidates[i] == candidates[i - 1]:
+                continue
+
+            # ! 计算差距或者差异
+            diff = target - candidates[i]
+
+            if diff >= 0:
+                temp.append(candidates[i])
+                # ! 递归，深度优先搜索
+                bf_dfs(diff, i + 1, candidates, temp, res)
+                del temp[-1]
+
+        return
+
+    bf_dfs(target, 0, candidates, temp, res)
+
+    return res
+
+
+# %%
+# * Letter Case Permutation
+def letterCasePermutation(self, S):
+    # ! 超时
+    """
+    :type S: str
+    :rtype: List[str]
+    """
+    if S.isdigit():
+        return [S]
+
+    if S == "":
+        return [""]
+
+    res = [S]
+
+    str_arr = list(S)
+
+    def bf_dfs(str_init, cha):
+        temp = copy.deepcopy(str_init)
+
+        if temp[cha].isalpha():
+            temp[cha] = temp[cha].lower()
+            str_init[cha] = str_init[cha].upper()
+
+            res.append("".join(str_init))
+            res.append("".join(temp))
+
+
+        for i in range(cha + 1, len(temp)):
+            bf_dfs(temp, i)
+            bf_dfs(str_init, i)
+
+        return
+
+    bf_dfs(str_arr, 0)
+
+    return list(set(res))
+
+
+def letterCasePermutation(self, S):
+    # ! 283ms, 踩线过
+    # ! 使用深度优先搜索
+    """
+    :type S: str
+    :rtype: List[str]
+    """
+    if S == "":
+        return [""]
+
+    res = [S]
+
+    str_arr = list(S)
+
+    def bf_dfs(str_init, cha):
+
+        if cha == len(str_init):
+            return
+
+        if str_init[cha].isalpha():
+            temp = copy.deepcopy(str_init)
+            temp[cha] = temp[cha].lower()
+            str_init[cha] = str_init[cha].upper()
+
+            res.append("".join(str_init))
+            res.append("".join(temp))
+            bf_dfs(temp, cha + 1)
+            bf_dfs(str_init, cha + 1)
+        else:
+            bf_dfs(str_init, cha + 1)
+
+
+    bf_dfs(str_arr, 0)
+
+    return list(set(res))
+
+
+# %%
+# * Powerful Integers
+def powerfulIntegers(self, x, y, bound):
+    """
+    :type x: int
+    :type y: int
+    :type bound: int
+    :rtype: List[int]
+    """
+    if bound == 0:
+        return []
+
+    if x == 1:
+        x_bound = 0
+    else:
+        x_bound = math.ceil(math.log(bound, x))
+
+    if y == 1:
+        y_bound = 0
+    else:
+        y_bound = math.ceil(math.log(bound, y))
+
+    res = []
+
+    for i in range(x_bound + 1):
+        for j in range(y_bound + 1):
+            acc = int(math.pow(x, i) + math.pow(y, j))
+
+            if acc <= bound and acc not in res:
+                res.append(acc)
+
+
+    return res
+
+
+# %%
+# * Pancake Sorting
+def pancakeSort(self, A):
+    # ! 这个方法实际上是在每轮循环中寻找最大的那个数，使其在正确的位置
+    """
+    :type A: List[int]
+    :rtype: List[int]
+    """
+    bucket = sorted(A)
+    ans = []
+    for k in range(len(A),0,-1):
+        i = A.index(bucket.pop())+1
+        ans += [i, k]
+        A = A[i:k][::-1] + A[:i]  + A[k:]
+        print(A)
+    return ans
+
+
+# %%
+# * Construct Binary Tree from Preorder and Inorder Traversal
+def buildTree(self, preorder, inorder):
+    """
+    :type preorder: List[int]
+    :type inorder: List[int]
+    :rtype: TreeNode
+    """
+    # ! 中序遍历序列
+    inorder_dict = {item[1]:item[0] for item in enumerate(inorder)} # ! 左<中<右
+    head = None
+    stack_tree = []
+
+    for val in preorder: # ! 中<左<右，前序遍历序列
+        if not head:
+            head = TreeNode(val)
+            stack_tree.append(head)
+        else:
+            node = TreeNode(val)
+            if inorder_dict[val] < inorder_dict[stack_tree[-1].val]:
+                stack_tree[-1].left = node
+            else:
+                # ! 取位于当前节点的左边的那个节点作为其根节点，即u
+                while stack_tree and inorder_dict[val] > inorder_dict[stack_tree[-1].val]:
+                    u = stack_tree.pop()
+                u.right = node
+
+            stack_tree.append(node)
+
+
+    return head
+
+
+# %%
+# * Flip String to Monotone Increasing
+def minFlipsMonoIncr(self, S):
+    # ! 这个方法超时了，不过这个方法就是暴力求解，寻找字符串的最佳切分点
+    # ! 不过for循环中的count方法太耗时，不要使用
+    """
+    :type S: str
+    :rtype: int
+    """
+
+    count0 = S.count('0')
+    count1 = S.count('1')
+    minimum_count = min(count0, count1)
+
+    for i in range(1, len(S)):
+        count = S[:i].count('1') + S[i:].count('0')
+
+        if count < minimum_count:
+            minimum_count = count
+
+    return minimum_count
+
+
+def minFlipsMonoIncr(self, S):
+    # ! 84ms
+    # ! 这道题可以转化为寻找字符串最佳切分点的问题来解
+    """
+    :type S: str
+    :rtype: int
+    """
+    count0 = S.count('0')
+    count1 = S.count('1')
+    minimum_count = min(count0, count1)
+    left_1, right_0 = 0, count0
+
+    # ! 主要是将count部分优化了一下
+    # ! 因为需要将S字符串从左往右遍历一遍，所以直接在遍历的过程中，计算出现在左边1和出现在右边0的数量
+    for i in range(0, len(S)):
+        if S[i] == '1':
+            left_1 += 1
+        else:
+            right_0 -= 1
+
+        count = left_1 + right_0
+
+        if count < minimum_count:
+            minimum_count = count
+
+    return minimum_count
+
+
+# %%
+# * Max Chunks To Make Sorted
+# ! 当前数字所在的块至少要到达坐标为当前数字大小的地方，比如数字4所在的块至少要包括i=4的那个位置
+# ! 对例子的分析和思考很重要，仔细理解题目
+# ! 这个思路确实是最好最快的思路
+# ! 递归也可以实现，但是时间成本比较高，坑比较多，不推荐
+def maxChunksToSorted(self, arr):
+    """
+    :type arr: List[int]
+    :rtype: int
+    """
+    count, current_max = 0, float('-inf')
+    for i, a in enumerate(arr):
+        current_max = max(current_max, a)
+        if i == current_max:
+            count += 1
+
+    return count
+
+
+# %%
+# * Custom Sort String
+def customSortString(self, S, T):
+    # ! 126ms, 踩线过
+    # ! 这道题题意很明确, 比较容易理解
+    # ! 暴力求解, O(n^2)
+    """
+    :type S: str
+    :type T: str
+    :rtype: str
+    """
+    s_dict = {item[1]:item[0] for item in enumerate(S)}
+
+    T_arr = list(T)
+
+    # ! 冒泡排序, 时间复杂度比较高
+    for i in range(len(T_arr)):
+        for j in range(i+1, len(T_arr)):
+
+            if T_arr[i] in s_dict and T_arr[j] in s_dict:
+                if s_dict[T_arr[i]] > s_dict[T_arr[j]]:
+                    T_arr[i], T_arr[j] = T_arr[j], T_arr[i]
+
+
+    return "".join(T_arr)
+
+
+def customSortString(self, S, T):
+    # ! 56ms，构造一个新的字符串(即排序后的字符串)
+    # ! 时间复杂度低
+    """
+    :type S: str
+    :type T: str
+    :rtype: str
+    """
+    # ! 这个count函数用得很精髓
+    result = ""
+    for char in S:
+        if char in T:
+            count = T.count(char) # !
+            result += char * count
+            T = T.replace(char,'')
+    return result + T
+
+
+
+# %%
+# * Fibonacci Number
+# ! 这是一道垃圾题目, 这个有点弱智(当作回顾)
+def fib(self, N):
+    """
+    :type N: int
+    :rtype: int
+    """
+
+    def cal_fib(n):
+        if n == 0:
+            return 0
+
+        if n == 1:
+            return 1
+
+
+        return cal_fib(n - 1) + cal_fib(n - 2)
+
+
+    return cal_fib(N)
+
+
+# %%
+# * Diagonal Traverse
+def findDiagonalOrder(self, matrix):  # ! 168ms
+    """
+    :type matrix: List[List[int]]
+    :rtype: List[int]
+    """
+    if matrix == []:
+        return matrix
+
+    m = len(matrix)
+    n = len(matrix[0])
+
+    if m == 1:
+        return matrix[0]
+
+    if n == 1:
+        return [item[0] for item in matrix]
+    i, j = 0, 1
+    flag = 0 # ! 这帮助辨别方向
+
+    res = [matrix[0][0]]
+
+    while True:
+
+        res.append(matrix[i][j])
+
+        if i == m - 1 and j == n - 1:
+            break
+
+        if j == 0 and i < m - 1 and flag == 0:
+            i += 1
+            flag = 1
+            continue
+
+        if j < n - 1 and i == 0 and flag == 1:
+            flag = 0
+            j += 1
+            continue
+
+        if i == m - 1 and j < n - 1 and flag == 0:
+            flag = 1
+            j += 1
+            continue
+
+        if j == n - 1 and i < m - 1 and flag == 1:
+            flag = 0
+            i += 1
+            continue
+
+        if flag == 0:
+            i += 1
+            j -= 1
+            continue
+
+        if flag == 1:
+            i -= 1
+            j += 1
+            continue
+
+    return res
+
+
+# %%
+# * Spiral Matrix
+def spiralOrder(self, matrix):
+    """
+    :type matrix: List[List[int]]
+    :rtype: List[int]
+    """
+    result = []
+    if matrix == []:
+        return result
+
+    # ! 将这道题从左，右，上，下四个方位拆解，进行作答
+    # ! 其实就是将螺旋的过程进行拆分
+    # ! 将一个复杂的过程，进行拆分实现，有助于答题以及理清楚逻辑
+    left, right, top, bottom = 0, len(matrix[0]) - 1, 0, len(matrix) - 1
+
+    while left <= right and top <= bottom:
+        for j in range(left, right + 1):
+            result.append(matrix[top][j])
+        for i in range(top + 1, bottom):
+            result.append(matrix[i][right])
+        for j in reversed(range(left, right + 1)):  # ! reversed是个迭代器
+            if top < bottom:
+                result.append(matrix[bottom][j])
+        for i in reversed(range(top + 1, bottom)):
+            if left < right:
+                result.append(matrix[i][left])
+        left, right, top, bottom = left + 1, right - 1, top + 1, bottom - 1
+
+    return result
+
+
+# %%
+# * Minimum Size Subarray Sum
+'''
+我们需要定义两个指针left和right，分别记录子数组的左右的边界位置，
+然后我们让right向右移，直到子数组和大于等于给定值或者right达到数组末尾，此时我们更新最短距离，
+并且将left像右移一位，然后再sum中减去移去的值，然后重复上面的步骤
+'''
+def minSubArrayLen(self, s, nums):
+    # ! 从two-pointer的角度出发进行思考解法
+    """
+    :type s: int
+    :type nums: List[int]
+    :rtype: int
+    """
+    if nums == []: return 0
+    if max(nums) >= s: return 1
+    left, right = 0, 0
+    acc = 0
+    length_num = len(nums)
+    res = float('inf')
+
+
+    for i in range(len(nums)):
+        acc += nums[i]
+
+        while left <= i and acc >= s:
+            res = min(res, i - left + 1)
+            acc -= nums[left]
+            left += 1
+
+
+
+    return 0 if res == float('inf') else res
+
+
+
+# %%
+# * Remove Duplicates from Sorted Array
+def removeDuplicates(self, nums):
+    """
+    :type nums: List[int]
+    :rtype: int
+    """
+    if len(nums) == 0:
+        return 0
+    j = 0
+    len_n = len(nums)
+    for i in range(len_n):
+
+        if nums[j] != nums[i]:
+            nums[j + 1] = nums[i]
+            j += 1
+
+    return j + 1
+
+
+# %%
+# * Valid Sudoku
+def isValidSudoku(self, board):
+    """
+    :type board: List[List[str]]
+    :rtype: bool
+    """
+    # ! 创建字典保存board中的信息是很巧妙的想法
+    col_dict = [{} for i in range(9)]
+    row_dict = [{} for i in range(9)]
+    box_dict = [{} for i in range(9)]
+
+    for i in range(9):
+        for j in range(9):
+            num = board[i][j]
+
+            if num != '.':
+                num = int(num)
+
+                # ! 这个是这道题的关键步骤之一
+                box_index = (i // 3) * 3 + j // 3
+
+                row_dict[i][num] = row_dict[i].get(num, 0) + 1
+                col_dict[j][num] = col_dict[j].get(num, 0) + 1
+                box_dict[box_index][num] = box_dict[box_index].get(
+                    num, 0) + 1
+
+                if row_dict[i][num] > 1 or col_dict[j][num] > 1 or box_dict[box_index][num] > 1:
+                    return False
+
+        return True
+
+
+# %%
+# * Rotate Image
+def rotate(self, matrix):
+    # ! 可以通过观察exmaples来寻找解题思路
+    """
+    :type matrix: List[List[int]]
+    :rtype: void Do not return anything, modify matrix in-place instead.
+    """
+    n = len(matrix)
+
+    # ! 先沿对角线交换元素
+    for i in range(n):
+        for j in range(i): # ! i
+            matrix[i][j], matrix[j][i] = matrix[j][i], matrix[i][j]
+
+
+    # ! 再按照相应的两列进行交换元素
+    for i in range(n):
+        for j in range(n // 2):
+            matrix[i][j], matrix[i][n - 1 - j] = matrix[i][n - 1 - j], matrix[i][j]
+
+
+# %%
+# * K Closest Points to Origin
+def kClosest(self, points, K):
+    """
+    :type points: List[List[int]]
+    :type K: int
+    :rtype: List[List[int]]
+    """
+    res = []
+    def eclidean_distance(x, y):
+
+        return math.sqrt(x ** 2 + y ** 2)
+
+
+    distances_points = sorted({item[0]:eclidean_distance(item[1][0], item[1][1]) for item in enumerate(points)}.items(), key=lambda item: item[1])
+
+
+
+    for i in range(0, K):
+        res.append(points[distances_points[i][0]])
+
+    return res
+
+
+# %%
+# *
+def largestPerimeter(self, A):
+    # ! 使用遍历的方法无法通过，会超时
+    # ! 我思考这个题的时候思想有点固化，不一定要完全列举出所有combinations
+    # ! 这种想法是导致超时的直接原因
+    """
+    :type A: List[int]
+    :rtype: int
+    """
+    max_length = 0
+
+    def isTriangle(x,y,z):
+        nums = sorted([x,y,z])
+
+        if nums[0] + nums[1] > nums[2] and nums[2] - nums[0] < nums[1]:
+            return True
+        else:
+            return False
+
+    for item in list(combinations(A, 3)):
+        temp = item[0] + item[1] + item[2]
+        if isTriangle(item[0], item[1], item[2]) and max_length < temp:
+            max_length = temp
+
+
+
+    return max_length
+
+
+
+def largestPerimeter(self, A):
+    """
+    :type A: List[int]
+    :rtype: int
+    """
+
+    # ! sorted用得很精髓
+    A = sorted(A, reverse=True)
+
+    for i in range(0, len(A)-2):
+        if A[i+1] + A[i+2] > A[i]:
+            return A[i] + A[i+1] + A[i+2]
+
+    return 0
+
+
+
+# %%
+# * Subarray Sums Divisible by K
+# ! (a+b+c+d....)% K = (a%K + b%K +....)%K
+# ! so if their prefix sum remainder subtract to zero, it is a valid subarray sum divisible to K
+def subarraysDivByK(self, A, K):
+    # ! 超时
+    # ! 最为弱智的一种方法
+    """
+    :type A: List[int]
+    :type K: int
+    :rtype: int
+    """
+
+    count = 0
+    acc = 0
+
+    for i in range(len(A)):
+        acc += A[i]
+        if acc % K == 0:
+            count += 1
+        for j in range(i + 1, len(A)):
+            acc += A[j]
+            if acc % K == 0:
+                count += 1
+
+        acc = 0
+
+
+
+    return count
+
+
+def subarraysDivByK(self, A, K):
+    # !利用余数的性质, 以及数组前缀和
+        """
+        :type A: List[int]
+        :type K: int
+        :rtype: int
+        """
+        hashMap = {}
+        cnt = 0
+        add = 0
+        for a in A:
+            add += a
+            mod = add % K
+
+            if mod == 0:
+                cnt += 1
+            if mod in hashMap:
+                cnt += hashMap[mod]
+                hashMap[mod] += 1
+            else:
+                hashMap[mod] = 1
+
+        return cnt
+
+
+# %%
+# * Count and Say
+def countAndSay(self, n):
+    # ! 这题的考点在于迭代生成字符串
+    """
+    :type n: int
+    :rtype: str
+    """
+    b='1'   # 将第一行的1换成字符类型，便于下一行的读出
+    for i in range (n-1):    # (n-1)是因为第一行不需要处理，直接可以读出
+        a, c, count = b[0], '', 0   # a用来读取上一行的第一个字符，c用来存放读出的内容(char)，count用来统计
+        for j in b:
+            if a == j:
+                count += 1
+            else:
+                # ! 在遇到新的字符是，先将之前的结果存入最终的结果里
+                c += str(count) + a   # 注意一定要将count转换为字符型，否则两个数就会相加（变成数学公式）。
+                a = j
+                count = 1
+        c += str(count) + a
+        b = c
+    return b
+
+
+# %%
+# * Remove Nth Node From End of List
+def removeNthFromEnd(self, head, n):
+    """
+    :type head: ListNode
+    :type n: int
+    :rtype: ListNode
+    """
+    len_count = 0
+    count = 0
+
+    cur = res = head
+
+    while cur:
+        len_count += 1
+        cur = cur.next
+
+    if len_count == 1:
+        head = None
+        return head
+
+    if n == 1:  # ! 处理尾删除情况
+        while head:
+            count += 1
+            if count == len_count - 1:
+                head.next = None
+                return res
+            head = head.next
+
+
+    while head:
+        # !处理头删除情况
+        if len_count - count == n and count == 0:
+            head = head.next
+            return head
+
+        if len_count - count == n:
+            head.val = head.next.val
+            head.next = head.next.next
+
+
+        count += 1
+
+        head = head.next
+
+    return res

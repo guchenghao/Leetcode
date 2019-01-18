@@ -4309,6 +4309,7 @@ def removeNthFromEnd(self, head, n):
             head = head.next
 
 
+
     while head:
         # !处理头删除情况
         if len_count - count == n and count == 0:
@@ -4325,3 +4326,183 @@ def removeNthFromEnd(self, head, n):
         head = head.next
 
     return res
+
+
+# %%
+# * Binary Tree Level Order Traversal
+def levelOrder(self, root):
+    # ! 使用广度优先搜索进行解题
+    """
+    :type root: TreeNode
+    :rtype: List[List[int]]
+    """
+    if not root: return []
+    res = []
+    Bst = [root]
+    lastNum = 1
+    count = 0
+    temp = []
+
+    while Bst:
+        node = Bst.pop(0)
+        lastNum -= 1
+        temp.append(node.val)
+
+
+        if node.left:
+            count += 1
+            Bst.append(node.left)
+
+        if node.right:
+            count += 1
+            Bst.append(node.right)
+
+        if lastNum == 0:
+            res.append(temp)
+            temp = []
+            lastNum = count
+            count = 0
+
+    return res
+
+
+# %%
+# * Symmetric Tree
+def isSymmetric(self, root):
+    # ! 利用广度优先搜索，超时
+    """
+    :type root: TreeNode
+    :rtype: bool
+    """
+    def compare_sym(arr):
+        if len(arr) == 1:
+            return True
+        j = int(len(arr) / 2)
+        i = j - 1
+
+        while i >= 0 and j <= len(arr) - 1:
+            if arr[i] == arr[j]:
+                i -= 1
+                j += 1
+                continue
+            else:
+                return False
+
+        return True
+
+    if not root: return True
+
+    temp = []
+    bfs = [root]
+    lastNum = 1
+    count = 0
+
+    while bfs:
+        node = bfs.pop(0)
+        lastNum -= 1
+        temp.append(node.val)
+
+        if node.left:
+            count += 1
+            bfs.append(node.left)
+        else:
+            count += 1
+            bfs.append(TreeNode(0))
+
+        if node.right:
+            count += 1
+            bfs.append(node.right)
+        else:
+            count += 1
+            bfs.append(TreeNode(0))
+
+
+        if lastNum == 0:
+            if list(set(temp)) == [0] and len(temp) > 1:
+                break
+            lastNum = count
+            count = 0
+            if compare_sym(temp):
+                temp = []
+            else:
+                return False
+
+    return True
+
+
+def isSymmetric(self, root):
+    """
+    :type root: TreeNode
+    :rtype: bool
+    """
+    if not root:
+        return True
+
+    temp = []
+    # ! 考虑的时候，思维有点固化，一个list不行，可以两个
+    bfs_left = [root.left]
+    bfs_right = [root.right]
+
+    while bfs_left and bfs_right:
+        # ! 分左右子树进行迭代
+        node_left = bfs_left.pop(0)
+        node_right = bfs_right.pop(0)
+
+        if not node_left and not node_right:
+            continue
+
+        if (not node_left and node_right) or (node_left and not node_right):
+            return False
+
+        if node_left.val != node_right.val:
+            return False
+
+        bfs_left.append(node_left.left)
+        bfs_left.append(node_left.right)
+        # ! 注意bfs_right是反方向添加node，这样便于比较
+        bfs_right.append(node_right.right)
+        bfs_right.append(node_right.left)
+
+    return True
+
+
+# %%
+# * Shuffle an Array
+class Solution:
+
+    def __init__(self, nums):
+        """
+        :type nums: List[int]
+        """
+        self.num_set = nums
+        self.orgin_set = self.num_set.copy()
+
+    def reset(self):
+        """
+        Resets the array to its original configuration and return it.
+        :rtype: List[int]
+        """
+        return self.orgin_set
+
+
+    def shuffle(self):
+        """
+        Returns a random shuffling of the array.
+        :rtype: List[int]
+        """
+        random.shuffle(self.num_set)
+        return self.num_set
+
+
+# %%
+# * Number of 1 Bits
+def hammingWeight(self, n):
+    """
+    :type n: int
+    :rtype: int
+    """
+    return bin(n)[2:].count('1')
+
+
+# %%
+# *

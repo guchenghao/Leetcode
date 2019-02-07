@@ -162,6 +162,15 @@ def lengthOfLastWord(self, s):
 # %%
 # * Path Sum
 # * 使用了递归的方式,遍历树
+# ! Top-Down的方法
+'''
+1. return specific value for null node
+2. update the answer if needed                      // anwer <-- params
+3. left_ans = top_down(root.left, left_params)      // left_params <-- root.val, params
+4. right_ans = top_down(root.right, right_params)   // right_params <-- root.val, params
+5. return the answer if needed                      // answer <-- left_ans, right_ans
+'''
+
 def hasPathSum(self, root, sum):
     """
     :type root: TreeNode
@@ -2133,7 +2142,7 @@ def judgeCircle(self, moves):
 
 # %%
 # * Valid Parentheses
-# ! 主要使用栈stack
+# ! 这是一道典型的使用栈stack的题目
 def isValid(self, s):  # ! 这个方法是比较巧妙，不过使用了额外的space,例如：map_dict、st
     """
     :type s: str
@@ -2397,6 +2406,15 @@ def climbStairs(self, n):
     :type n: int
     :rtype: int
     """
+
+    '''
+      n<=1，此时只有一种。
+
+　　   n>1时，对于每一个台阶i，要到达台阶，最后一步都有两种方法，从i-1迈一步，或从i-2迈两步。
+
+　　   也就是说到达台阶i的方法数=达台阶i-1的方法数+达台阶i-2的方法数。所以该问题是个DP问题。
+    '''
+
     if n <= 1:
         return 1
     res = []
@@ -4502,6 +4520,380 @@ def hammingWeight(self, n):
     :rtype: int
     """
     return bin(n)[2:].count('1')
+
+
+# %%
+# * Reverse Bits
+def reverseBits(self, n):
+    # ! @param n, an integer
+    # ! @return an integer
+    bin_n = bin(n)[2:]
+
+    if len(bin_n) < 32:
+        bin_n = '0' * (32 - len(bin_n)) + bin_n
+
+    return int(bin_n[::-1], 2)
+
+
+# %%
+# * House Robber
+def rob(self, nums):
+    # ! 错误解法，只考虑到一步的动态规划
+    """
+    :type nums: List[int]
+    :rtype: int
+    """
+    n = len(nums)
+
+    if n == 0: return 0
+
+    if n == 1: return nums[0]
+
+    res = [nums[0], nums[1]]
+
+    for i in range(2, n):
+        res.append(res[-2] + nums[i])
+
+
+    return max(res[-2], res[-1])
+
+
+def rob(self, nums):
+    """
+    :type nums: List[int]
+    :rtype: int
+    """
+    n = len(nums)
+
+    if n == 0: return 0
+
+    if n == 1: return nums[0]
+
+    res = [nums[0], max(nums[0], nums[1])]
+
+    for i in range(2, n):
+        # ! 这个方程式叫状态转移方程，是DP问题的核心
+        res.append(max(res[i - 2] + nums[i], res[i - 1]))
+
+
+    return res[-1]
+
+
+# %%
+# * Design Circular Queue
+# ! And remember when you want to process the elements in order
+# ! using a queue might be a good choice
+class MyCircularQueue:
+
+    def __init__(self, k):
+        """
+        Initialize your data structure here. Set the size of the queue to be k.
+        :type k: int
+        """
+        self.deque = []
+        self.size = k
+        self.rear = 0
+
+    def enQueue(self, value):
+        """
+        Insert an element into the circular queue. Return true if the operation is successful.
+        :type value: int
+        :rtype: bool
+        """
+        if len(self.deque) >= self.size:
+            return False
+        else:
+            self.deque.append(value)
+            self.rear += 1
+            return True
+
+    def deQueue(self):
+        """
+        Delete an element from the circular queue. Return true if the operation is successful.
+        :rtype: bool
+        """
+        if len(self.deque) > 0:
+            self.deque.pop(0)
+            self.rear -= 1
+            return True
+        else:
+            return False
+
+    def Front(self):
+        """
+        Get the front item from the queue.
+        :rtype: int
+        """
+        if len(self.deque) > 0:
+            return self.deque[0]
+        else:
+            return -1
+
+    def Rear(self):
+        """
+        Get the last item from the queue.
+        :rtype: int
+        """
+        if len(self.deque) > 0:
+            return self.deque[self.rear - 1]
+        else:
+            return -1
+
+    def isEmpty(self):
+        """
+        Checks whether the circular queue is empty or not.
+        :rtype: bool
+        """
+        return 0 == self.rear
+
+    def isFull(self):
+        """
+        Checks whether the circular queue is full or not.
+        :rtype: bool
+        """
+        return self.rear == self.size
+
+
+# %%
+# * Perfect Squares
+# ! 四平方和定理: 任意一个正整数均可表示为4个整数的平方和，其实是可以表示为4个以内的平方数之和
+def numSquares(self, n):
+    # ! 这道题的动态规划(DP)的解法，牛逼
+    """
+    :type n: int
+    :rtype: int
+    """
+    if n==0:
+        return 0
+    output = [0x7fffffff]*(n+1)
+    output[0] = 0
+    output[1] = 1
+    for i in range(2,n+1):
+        j = 1
+        while(j*j<=i):
+            # ! 这个状态转移方程真的牛逼
+            output[i] = min(output[i],output[i-j*j]+1)
+            j = j+1
+    return output[n]
+
+
+# %%
+# * Evaluate Reverse Polish Notation
+def evalRPN(self, tokens):
+    # ! 求解逆波兰式，主要利用栈
+    """
+    :type tokens: List[str]
+    :rtype: int
+    """
+    stack = []
+
+    for item in tokens:
+        # print(stack)
+        if item.isdigit():
+            stack.append(int(item))
+
+        if item[0] == '-' and len(item) > 1 and item[1:].isdigit():
+            stack.append(int(item))
+
+        if item == '*':
+            num1 = stack.pop()
+            num2 = stack.pop()
+
+            stack.append(num1 * num2)
+
+        if item == '/':
+            num1 = stack.pop()
+            num2 = stack.pop()
+
+            stack.append(int(num2 / num1))
+
+
+        if item == '+':
+            num1 = stack.pop()
+            num2 = stack.pop()
+
+            stack.append(num1 + num2)
+
+        if item == '-':
+            num1 = stack.pop()
+            num2 = stack.pop()
+
+            stack.append(num2 - num1)
+
+
+
+    return stack[0]
+
+
+# %%
+# * String Without AAA or BBB
+# ! 使用贪心算法(Greedy)进行解题
+def strWithout3a3b(self, A, B):
+    # ! 迭代法
+    """
+    :type A: int
+    :type B: int
+    :rtype: str
+    """
+    res = ''
+    if A == 0:
+        return 'b' * B
+
+    if B == 0:
+        return 'a' * A
+
+    while A > 0 and B > 0:
+        print(A)
+        print(B)
+        if A > B:
+            res += 'aab'
+            A -= 2
+            B -= 1
+
+        elif B > A:
+            res += 'bba'
+            B -= 2
+            A -= 1
+        else:
+            res += 'ab'
+            B -= 1
+            A -= 1
+
+
+    if A: return res + ('a' * A)
+
+    if B: return res + ('b' * B)
+
+    return res
+
+
+def strWithout3a3b(self, A, B):
+    # ! 递归法
+    """
+    :type A: int
+    :type B: int
+    :rtype: str
+    """
+    if A == 0:
+        return 'b' * B
+    elif B == 0:
+        return 'a' * A
+    elif A == B:
+        return 'ab' + self.strWithout3a3b(A-1, B-1)
+    elif A > B:
+        return 'aab' + self.strWithout3a3b(A-2, B-1)
+    else:
+        return 'bba' + self.strWithout3a3b(A-1, B-2)
+
+
+# %%
+# * Binary Tree Preorder Traversal
+# ! 前序遍历
+'''
+When you meet a tree problem,
+ask yourself two questions:
+can you determine some parameters to help the node know the answer of itself ?
+Can you use these parameters and the value of the node itself to determine what should be the parameters parsing to its children ?
+If the answers are both yes, try to solve this problem using a "top-down" recursion solution
+'''
+
+def preorderTraversal(self, root):
+    """
+    :type root: TreeNode
+    :rtype: List[int]
+    """
+    self.res = []
+
+    def pre_traverse(node):
+        if node:
+            self.res.append(node.val)
+            pre_traverse(node.left)
+            pre_traverse(node.right)
+
+
+    pre_traverse(root)
+
+    return self.res
+
+
+# %%
+# * Populating Next Right Pointers in Each Node
+# ! 广度优先搜索
+class Solution:
+# @param root, a tree link node
+# @return nothing
+def connect(self, root):
+    if not root: return
+    root.next = None
+    bfs = []
+    lastnumber = 2
+    count = 0
+    if root.left and root.right:
+        bfs.append(root.left)
+        bfs.append(root.right)
+    else:
+        return
+
+    while bfs:
+        left_node = bfs.pop(0)
+        right_node = bfs.pop(0)
+        lastnumber -= 2
+
+        if left_node.left:
+            count += 1
+            bfs.append(left_node.left)
+        if left_node.right:
+            count += 1
+            bfs.append(left_node.right)
+        if right_node.left:
+            count += 1
+            bfs.append(right_node.left)
+        if right_node.right:
+            count += 1
+            bfs.append(right_node.right)
+
+        if lastnumber == 0:
+            left_node.next = right_node
+            right_node.next = None
+            lastnumber = count
+            count = 0
+        else:
+            left_node.next = right_node
+            right_node.next = bfs[0]
+
+
+# %%
+# * Populating Next Right Pointers in Each Node II
+# ! 广度优先搜索
+class Solution:
+# @param root, a tree link node
+# @return nothing
+def connect(self, root):
+    if not root: return
+    root.next = None
+    bfs = [root]
+    lastnumber = 1
+    count = 0
+
+    while bfs:
+        node = bfs.pop(0)
+        lastnumber -= 1
+
+        if node.left:
+            count += 1
+            bfs.append(node.left)
+
+        if node.right:
+            count += 1
+            bfs.append(node.right)
+
+        if lastnumber == 0:
+            node.next = None
+            lastnumber = count
+            count = 0
+
+        else:
+            node.next = bfs[0]
 
 
 # %%
